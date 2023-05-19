@@ -7,4 +7,5 @@ app_name = 'item'
 urlpatterns = [
     #el path espera el id del item para desplegar el view de detalles
     path('<int:pk>/', views.detalle, name='detalle'),
+    path('nuevo/', views.new, name='new'),
 ]

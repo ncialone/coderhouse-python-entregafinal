@@ -1,5 +1,7 @@
-from django.shortcuts import render, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, get_object_or_404, redirect
 from .models import Item
+from .forms import NewItemForm
 
 def detalle(request, pk):
     #se pasa por parametro el id del item a buscar
@@ -10,4 +12,22 @@ def detalle(request, pk):
     return render(request, 'item/detalle.html',{
         'item': item,
         'items_relacionados': items_relacionados
+    })
+    
+@login_required
+def new(request):
+    if request.method == 'POST':
+        form = NewItemForm(request.POST, request.FILES)
+        
+        if form.is_valid():
+            item = form.save(commit=False)
+            item.creador = request.user
+            item.save()
+            
+            return redirect('item:detalle', pk=item.id)
+    form = NewItemForm()
+        
+    return render(request, 'item/form.html', {
+        'form': form,
+        'title': 'Nuevo item'
     })
