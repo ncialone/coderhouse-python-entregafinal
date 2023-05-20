@@ -1,7 +1,29 @@
+
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Item
+from .models import Item, Categoria
 from .forms import NewItemForm, EditItemForm
+#importamos para poder realizar busquedas a fondo sobre la base de datos
+from django.db.models import Q
+
+def items(request):
+    busqueda = request.GET.get('busqueda', '')
+    categoria_id = request.GET.get('categoria', 0)
+    categorias = Categoria.objects.all()
+    items = Item.objects.filter(vendido=False)
+    
+    if categoria_id:
+        items = items.filter(categoria_id=categoria_id)
+    
+    if busqueda:
+        items = items.filter(Q(nombre__icontains=busqueda))
+        
+    return render(request, 'item/items.html',{
+        'items': items,
+        'busqueda': busqueda,
+        'categorias': categorias,
+        'categoria_id': int(categoria_id),
+    })
 
 def detalle(request, pk):
     #se pasa por parametro el id del item a buscar

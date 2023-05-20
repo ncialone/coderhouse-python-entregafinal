@@ -5,9 +5,10 @@ from . import views
 app_name = 'item'
 
 urlpatterns = [
-    #el path espera el id del item para desplegar el view de detalles
+    #incluyendo int:pk, el path espera el id del item para desplegar el view de detalles
+    path('', views.items, name='items'),
+    path('nuevo/', views.new, name='new'),
     path('<int:pk>/', views.detalle, name='detalle'),
     path('<int:pk>/editar', views.edit, name='editar'),
     path('<int:pk>/borrar', views.delete, name='borrar'),
-    path('nuevo/', views.new, name='new'),
 ]
