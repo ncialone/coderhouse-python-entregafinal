@@ -20,7 +20,16 @@
             </p>
         {% endif %}
 
+        {% if request.user == item.creador  %}
+            <div class="mt-6 p-6 bg-white rounded-xl">
+                <p>Este es tu artículo</p>
+
+                <a href="{% url 'item:editar' item.id %}" class="inline-block mt-6 px-6 py-3 text-lg font-semibold bg-teal-500 text-white rounded-xl">Editar</a>
+                <a href="{% url 'item:borrar' item.id %}" class="inline-block mt-6 px-6 py-3 text-lg font-semibold bg-red-500 text-white rounded-xl">Borrar</a>
+            </div>
+        {% else %}
         <a href='#' class="inline-block mt-6 px-6 py-3 text-lg font-semibold bg-teal-500 text-white rounded-xl hover:bg-teal-700">Contactar al vendedor</a>
+        {% endif %}
     </div>
 </div>
 

@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Item
-from .forms import NewItemForm
+from .forms import NewItemForm, EditItemForm
 
 def detalle(request, pk):
     #se pasa por parametro el id del item a buscar
@@ -25,9 +25,36 @@ def new(request):
             item.save()
             
             return redirect('item:detalle', pk=item.id)
-    form = NewItemForm()
+    else:
+        form = NewItemForm()
         
     return render(request, 'item/form.html', {
         'form': form,
         'title': 'Nuevo item'
     })
+
+@login_required
+def edit(request, pk):
+    item = get_object_or_404(Item, pk=pk, creador=request.user)
+    
+    if request.method == 'POST':
+        form = EditItemForm(request.POST, request.FILES, instance=item)
+        
+        if form.is_valid():
+            form.save()
+            
+            return redirect('item:detalle', pk=item.id)
+    else:
+        form = EditItemForm(instance=item)
+        
+    return render(request, 'item/form.html', {
+        'form': form,
+        'title': 'Editar item'
+    })
+
+@login_required
+def delete(request, pk):
+    item = get_object_or_404(Item, pk=pk, creador=request.user)
+    item.delete()
+    
+    return redirect('dashboard:index')
